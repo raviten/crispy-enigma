@@ -1,6 +1,6 @@
 
 module.exports = {
-    HOST_URL: "",
+    HOST_URL: "/api",
     RISK_MODEL:                        "/risk-model/",
 
 };
