@@ -1,6 +1,6 @@
 
 module.exports = {
-    HOST_URL: "http://localhost:8000/api",
+    HOST_URL: "",
     RISK_MODEL:                        "/risk-model/",
 
 };
