@@ -12,7 +12,7 @@ class RiskModel(models.Model):
     name = models.CharField(max_length=100)
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True)
-    published = models.DateTimeField()
+    published = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.name
@@ -34,7 +34,7 @@ class GenericFieldType(models.Model):
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True)
     # Validators gt, gte, lt, lte, eq, neq, is_one_of
-    validators = models.TextField()
+    validators = models.TextField(default='{}')
 
     def __str__(self):
         return ('-').join([self.name])
