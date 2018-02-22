@@ -1,25 +1,27 @@
 from django.db import models
 from insurer.models import Insurer
+from django.contrib.auth.models import User
 # Create your models here.
 
 
-class RiskModel(models.Model):
+class RiskType(models.Model):
     insurer = models.ForeignKey(Insurer,
                                 related_name='risk_model',
                                 on_delete=models.CASCADE)
     is_published = models.BooleanField(default=False)
-    version = models.IntegerField()
     name = models.CharField(max_length=100)
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True)
-    published = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        unique_together = (('insurer', 'name'),)
 
-class GenericFieldType(models.Model):
-    risk_model = models.ForeignKey(RiskModel,
+
+class FieldType(models.Model):
+    risk_model = models.ForeignKey(RiskType,
                                    related_name='field_types',
                                    on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
@@ -33,14 +35,26 @@ class GenericFieldType(models.Model):
     ordering = models.IntegerField(default=1)
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True)
-    # Validators gt, gte, lt, lte, eq, neq, is_one_of
-    validators = models.TextField(default='{}')
+    # {oneOf: [], oneOfDataType # for enum only# ,
+    # validators: {gt, gte, lt, lte, eq, neq} }
+    schema = models.TextField(default='{}')
 
     def __str__(self):
         return ('-').join([self.name])
 
 
-# class Validator(models.Model):
+class Risk(models.Model):
+    risk_model = models.ForeignKey(RiskType,
+                                   related_name='risks',
+                                   on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='risks')
+    data = models.TextField(default='{}')
+
+    def __str__(self):
+        return ('-').join([self.user.username, self.risk_model.name])
+
+
+# class Schema(models.Model):
 #     generic_field_type = models.ForeignKey(GenericFieldType,
 #                                            on_delete=models.CASCADE)
 #     VALIDATOR_CHOICES = (
@@ -63,7 +77,7 @@ class GenericFieldType(models.Model):
 
 
 # More generic Enum validation
-# class EnumValidator(models.Model):
+# class OneOf(models.Model):
 #     generic_field_type = models.ForeignKey(GenericFieldType,
 #                                            on_delete=models.CASCADE)
 #     ENUM_FIELD_TYPE_CHOICES = (

@@ -139,10 +139,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = '/home/ubuntu/static/'
 LOG_BASE_DIR = os.path.join(os.path.expanduser('~'), 'log')
 LOG_DIR = os.path.join(LOG_BASE_DIR, APP_NAME)
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(os.path.expanduser('~'), 'static')
 
 if not os.path.exists(LOG_DIR):
     if not os.path.exists(LOG_BASE_DIR):
@@ -156,20 +157,11 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-        # social auth bacends
-        # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        # 'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
     ),
 }
-
-# social auth bacends
-# AUTHENTICATION_BACKENDS = (
-#     'rest_framework_social_oauth2.backends.DjangoOAuth2',
-#     'django.contrib.auth.backends.ModelBackend',
-# )
 
 LOGGING = {
     'version': 1,
