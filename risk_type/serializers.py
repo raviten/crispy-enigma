@@ -94,12 +94,12 @@ class RiskSerializer(serializers.ModelSerializer):
 
     def validate(self, value):
         data = self.initial_data
-        risk_model = value['risk_model']
-        if not risk_model.is_published:
+        risk_type = value['risk_type']
+        if not risk_type.is_published:
             raise serializers.ValidationError('Invalid risk type')
         d = {}
         errors = {}
-        for field_type in risk_model.field_types.all():
+        for field_type in risk_type.field_types.all():
             v = data.get(field_type.name, None)
             error = self.validate_field(field_type, v)
             if error:
