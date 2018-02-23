@@ -48,6 +48,7 @@ class RiskSerializer(serializers.ModelSerializer):
         ret = super(RiskSerializer,
                     self).to_representation(instance)
         ret['data'] = json.loads(ret['data'])
+        ret['name'] = instance.risk_type.name
         return ret
 
     def validate_field(self, field_type, value):
