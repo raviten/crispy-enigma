@@ -6,18 +6,18 @@ files:
 
 hooks:
   BeforeInstall:
-    - location: .scripts/install_dependencies.sh
+    - location: /home/ubuntu/backend/scripts/install_dependencies.sh
       timeout: 300
       runas: root
   AfterInstall:
-    - location: .scripts/after_install.sh
+    - location: /home/ubuntu/backend/scripts/after_install.sh
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: .scripts/start_server.sh
+    - location: /home/ubuntu/backend/scripts/start_server.sh
       timeout: 300
       runas: root
   ApplicationStop:
-    - location: .scripts/stop_server.sh
+    - location: /home/ubuntu/backend/scripts/stop_server.sh
       timeout: 300
       runas: root
