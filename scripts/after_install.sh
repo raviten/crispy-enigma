@@ -19,4 +19,5 @@ python manage.py collectstatic
 
 sudo supervisorctl reread
 sudo supervisorctl update
+sudo supervisorctl start all
 sudo service nginx restart
