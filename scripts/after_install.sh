@@ -1,8 +1,8 @@
 
 
 
-cp /home/ubuntu/backend/conf/nginx.conf /etc/nginx/sites-enabled/default
-cp /home/ubuntu/backend/conf/supervisor_backend.conf /etc/supervisor/conf.d/
+sudo cp /home/ubuntu/backend/conf/nginx.conf /etc/nginx/sites-enabled/default
+sudo cp /home/ubuntu/backend/conf/supervisor_backend.conf /etc/supervisor/conf.d/
 
 
 
