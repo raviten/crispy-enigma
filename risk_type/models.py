@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class RiskType(models.Model):
     insurer = models.ForeignKey(Insurer,
-                                related_name='risk_model',
+                                related_name='risk_types',
                                 on_delete=models.CASCADE)
     is_published = models.BooleanField(default=False)
     name = models.CharField(max_length=100)
@@ -21,9 +21,9 @@ class RiskType(models.Model):
 
 
 class FieldType(models.Model):
-    risk_model = models.ForeignKey(RiskType,
-                                   related_name='field_types',
-                                   on_delete=models.CASCADE)
+    risk_type = models.ForeignKey(RiskType,
+                                  related_name='field_types',
+                                  on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     FIELD_TYPE_CHOICES = (
         ('text', 'text'),
@@ -44,9 +44,9 @@ class FieldType(models.Model):
 
 
 class Risk(models.Model):
-    risk_model = models.ForeignKey(RiskType,
-                                   related_name='risks',
-                                   on_delete=models.CASCADE)
+    risk_type = models.ForeignKey(RiskType,
+                                  related_name='risks',
+                                  on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='risks')
     data = models.TextField(default='{}')
 
