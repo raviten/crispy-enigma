@@ -93,7 +93,6 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-DEFAULT_CONNECTION_NAME = 'development'
 
 DATABASES = {
     'default': {
@@ -101,6 +100,15 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+travis_test = os.getenv('TRAVIS_CI')
+if travis_test == 'testing':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'travis.sqlite3'),
+        }
+    }
 
 
 # Password validation
