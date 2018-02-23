@@ -5,6 +5,8 @@ from risk_type.models import (
     Risk
 )
 import json
+import numbers
+import dateutil.parser as dp
 
 
 class FieldTypeSerializer(serializers.ModelSerializer):
@@ -41,14 +43,77 @@ class RiskSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault()
     )
 
-    def run_validatiors(self, value):
-        print(value)
-        super(RiskSerializer, self).run_validatiors(value)
+    # Converting data from string to json and json to string
+    def to_representation(self, instance):
+        ret = super(RiskSerializer,
+                    self).to_representation(instance)
+        ret['data'] = json.loads(ret['data'])
+        return ret
+
+    def validate_field(self, field_type, value):
+        e = ['This field is required']
+        if not value or not isinstance(value, dict) or 'value' not in value:
+            return {
+                field_type.name: {
+                    'key': field_type.id,
+                    'value': e
+                }}
+        v = value['value']
+        e = ['This field should be %s' % (field_type.field_type)]
+        if field_type.field_type == 'number':
+            valid_number = isinstance(v, numbers.Number)
+            if not valid_number:
+                return {field_type.name: {
+                    'key': field_type.id,
+                    'value': e
+                }}
+        if field_type.field_type == 'text':
+            valid_string = isinstance(v, str)
+            if not valid_string:
+                return {field_type.name: {
+                    'key': field_type.id,
+                    'value': e
+                }}
+        if field_type.field_type == 'enum':
+            one_of = json.loads(field_type.schema)['oneOf']
+            e = ['field value should be one of ' + repr(one_of)]
+            valid_one_of = v in one_of
+            if not valid_one_of:
+                return {field_type.name: {
+                    'key': field_type.id,
+                    'value': e
+                }}
+        if field_type.field_type == 'date':
+            try:
+                dp.parse(v)
+            except Exception as e:
+                return {field_type.name: {
+                    'key': field_type.id,
+                    'value': ['Please enter valid date in ISO format']
+                }}
+
+    def validate(self, value):
+        data = self.initial_data
+        risk_model = value['risk_model']
+        if not risk_model.is_published:
+            raise serializers.ValidationError('Invalid risk type')
+        d = {}
+        errors = {}
+        for field_type in risk_model.field_types.all():
+            v = data.get(field_type.name, None)
+            error = self.validate_field(field_type, v)
+            if error:
+                errors.update(error)
+            else:
+                d.update({field_type.name: v})
+        if errors:
+            raise serializers.ValidationError(repr(errors))
+        value.update({'data': json.dumps(d)})
+        return value
 
     def create(self, validated_data):
-        print(validated_data)
-        # instance, _ = Risk.objects.get_or_create(**validated_data)
-        return None
+        instance = Risk.objects.create(**validated_data)
+        return instance
 
     class Meta:
         model = Risk
