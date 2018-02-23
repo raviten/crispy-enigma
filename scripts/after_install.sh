@@ -6,8 +6,8 @@ sudo cp /home/ubuntu/backend/conf/supervisor_backend.conf /etc/supervisor/conf.d
 
 
 
-sudo chown ubuntu:ubuntu -R .
 cd /home/ubuntu/backend/
+sudo chown ubuntu:ubuntu -R .
 rm -rf venv
 virtualenv venv --python=python3.5
 source venv/bin/activate
