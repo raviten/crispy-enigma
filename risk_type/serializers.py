@@ -68,14 +68,14 @@ class RiskSerializer(serializers.ModelSerializer):
                     'key': field_type.id,
                     'value': e
                 }}
-        if field_type.field_type == 'text':
+        elif field_type.field_type == 'text':
             valid_string = isinstance(v, str)
             if not valid_string:
                 return {field_type.name: {
                     'key': field_type.id,
                     'value': e
                 }}
-        if field_type.field_type == 'enum':
+        elif field_type.field_type == 'enum':
             one_of = json.loads(field_type.schema)['oneOf']
             e = ['field value should be one of ' + repr(one_of)]
             valid_one_of = v in one_of
@@ -84,7 +84,7 @@ class RiskSerializer(serializers.ModelSerializer):
                     'key': field_type.id,
                     'value': e
                 }}
-        if field_type.field_type == 'date':
+        elif field_type.field_type == 'date':
             try:
                 dp.parse(v)
             except Exception as e:
